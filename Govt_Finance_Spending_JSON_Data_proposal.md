@@ -57,6 +57,8 @@ Following are examples of API endpoints for some of the various combinations and
 
 ### EXAMPLE for Spending/Expeditures viewed by Mission, Comparing by Government Type, for year 2013
 
+[InVision Design Reference](https://artefactgroup.invisionapp.com/share/AQ9BWL1T4#/screens/210425493)
+
 #### GET `/API/spending/by_mission?comparison=government_type&year=2013`
 
 ```javascript
@@ -336,11 +338,44 @@ Following are examples of API endpoints for some of the various combinations and
         }
       ]
     },
+    {
+      "id": "grants-paid",
+      "name": null,
+      "type": "summary",
+      "columns": [
+        {
+          "name": "Federal",
+          "data_id": "federal",
+        },
+        {
+          "name": "State & Local",
+          "data_id": "state_local"
+        },
+        {
+          "name": "Combined",
+          "data_id": "combined"
+        }
+      ],
+      rows: [
+        {
+          "key": "grants-paid-by-federal-government",
+          "name": "Grants Paid by Federal Government, Received by S&L, and Discrepency",
+          "data": {
+            "federal": 546.8,
+            "state_local": 584.4,
+            "combined": -38.3
+          }
+        }
+      ],
+      total_rows: []
+    },
   ],
 }
 ```
 
 #### EXAMPLE for Spending/Expeditures viewed by Mission, Comparing by Years, for government type 'Combined'
+
+[InVision Design Reference](https://artefactgroup.invisionapp.com/share/AQ9BWL1T4#/screens/210425494)
 
 GET `/API/spending/by_mission?comparison=years&government_type=combined`
 
@@ -704,6 +739,41 @@ GET `/API/spending/by_mission?comparison=years&government_type=combined`
           }
         }
       ]
+    },
+    {
+      "id": "grants-paid",
+      "name": null,
+      "type": "summary",
+      "columns": [
+        {
+          "name": "Federal",
+          "data_id": "federal",
+        },
+        {
+          "name": "State & Local",
+          "data_id": "state_local"
+        },
+        {
+          "name": "Combined",
+          "data_id": "combined"
+        }
+      ],
+      rows: [
+        {
+          "key": "grants-paid-by-federal-government",
+          "name": "Grants Paid by Federal Government, Received by S&L, and Discrepency",
+          "data": {
+            "1980": 219.9,
+            "1990": 219.9,
+            "2000": 219.9,
+            "2010": 219.9,
+            "2011": 219.9,
+            "2012": 219.9,
+            "2013": 219.9
+          }
+        }
+      ],
+      total_rows: []
     },
   ],
 }
