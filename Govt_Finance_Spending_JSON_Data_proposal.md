@@ -783,6 +783,8 @@ GET `/API/spending/by_mission?comparison=years&government_type=combined`
 
 GET `/API/spending/by_function?comparison=government_type&year=2013?adjustments=per-capita+inflation`
 
+Reference Powerpoint Presentation page 30 for example of Spending/Expenditures by Function
+
 ```javascript
 {
   "title": "Spending By Mission",
