@@ -709,8 +709,7 @@ GET `/API/spending/by_mission?comparison=years&government_type=combined`
 }
 ```
 
-#### EXAMPLE for Spending/Expeditures viewed by Function, Comparing by Government Type, for year 2013,
-with adjustments for inflation and per capita engaged
+#### EXAMPLE for Spending/Expeditures viewed by Function, Comparing by Government Type, for year 2013, with adjustments for inflation and per capita engaged
 
 GET `/API/spending/by_function?comparison=government_type&year=2013?adjustments=per-capita+inflation`
 
