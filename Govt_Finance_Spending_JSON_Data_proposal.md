@@ -8,6 +8,12 @@ current_adjustments, etc). The examples here are meant to represent a couple fai
 responses in order to show the total data stucture needed to build the Government Finance tables 
 and interactivity.
 
+## COLUMNS ARRAY AND COLUMN OBJECT
+The columns array of objects represents the horizontal columns of the data and uses the 'id' to point 
+to the key in the row data and total_row data array objects. The 'name' field 
+is the visual display name to appear in the table header. In the previous version I had the columns array as 
+part of each individual data table object, but decided to move it to the main parent JSON object.
+
 ## DATA TABLES
 The data_tables array is made up of objects that represent each table to be displayed on the 
 page, given the selected combination of available attributes. Listing them out this way allows 
@@ -17,14 +23,6 @@ more control over their type.
 The data table object has basic info about its display name and type and includes a list of column 
 objects, row objects, and a list of total row objects. Omitting a name string will make it so there 
 is no header above the table (e.g. 'the Grants Paid' table in the designs). 
-
-## COLUMN OBJECT
-The columns array of objects represents the horizontal columns of the data and uses the 'data_id' to point 
-to the data point key in the data within the rows and total_rows array objects. The 'name' field 
-is the visual display name to appear in the table header. I debated whether or not to include the columns 
-array within the top level JSON object, so as not to have to repeat it for every table object, but including 
-it in the table object will allow for more finer control ultimately should all the table on the page need to 
-not share the same columns. 
 
 ## ROW OBJECT
 The row object is where the magic happens, at least as far as the expandable tables are concerned. Each of the 
@@ -40,7 +38,6 @@ The 'total_rows' array within a table object is simply used to delineate a diffe
 well as give more granualar and seperate control over what the totals are for each table. The object structure is identifical 
 to that of the objects in the 'rows' array. Simpy omitting this array will make it so there is no totals row at the bottom of the 
 table (e.g. the Grants Paid table, and Employment Summary table on Employment).
-
 
 ## STILL TO BE DETERMINED
 While this might be a good place to start, it is obvisouly the beginning of the conversation. There are a number of elements within the 
@@ -82,14 +79,14 @@ Following are examples of API endpoints for some of the various combinations and
   "available_comparisons": [
     {
       "name": "Government Type",
-      "id": "government_type"
+      "id": "by_government_type"
     },
     {
       "name": "Years",
-      "id": "years"
+      "id": "by_years"
     }
   ],
-  "current_comparison": "government_type",
+  "current_comparison": "by_government_type",
   "available_adjustments": [
     {
       "name": "Per Capita",
@@ -134,25 +131,25 @@ Following are examples of API endpoints for some of the various combinations and
     }
   ],
   "current_year": "2013",
+  "current_columns": [
+    {
+      "name": "Federal",
+      "id": "federal",
+    },
+    {
+      "name": "State & Local",
+      "id": "state_local"
+    },
+    {
+      "name": "Combined",
+      "id": "combined"
+    }
+  ],
   "data_tables": [
     {
       "id": "deficit-surplus",
       "name": "Annual Deficit / Surplus ($ billions)",
       "type": "summary",
-      "columns": [
-        {
-          "name": "Federal",
-          "data_id": "federal",
-        },
-        {
-          "name": "State & Local",
-          "data_id": "state_local"
-        },
-        {
-          "name": "Combined",
-          "data_id": "combined"
-        }
-      ],
       "rows": [
         {
           "key": "total-revenue",
@@ -189,20 +186,6 @@ Following are examples of API endpoints for some of the various combinations and
       "id": "by-mission",
       "name": "Spending By Mission ($ billions)",
       "type": "expandable",
-      "columns": [
-        {
-          "name": "Federal",
-          "data_id": "federal"
-        },
-        {
-          "name": "State & Local",
-          "data_id": "state_local"
-        },
-        {
-          "name": "Combined",
-          "data_id": "combined"
-        }
-      ],
       "rows": [
         {
           "key": "justice",
@@ -342,20 +325,6 @@ Following are examples of API endpoints for some of the various combinations and
       "id": "grants-paid",
       "name": null,
       "type": "summary",
-      "columns": [
-        {
-          "name": "Federal",
-          "data_id": "federal",
-        },
-        {
-          "name": "State & Local",
-          "data_id": "state_local"
-        },
-        {
-          "name": "Combined",
-          "data_id": "combined"
-        }
-      ],
       rows: [
         {
           "key": "grants-paid-by-federal-government",
@@ -400,14 +369,14 @@ GET `/API/spending/by_mission?comparison=years&government_type=combined`
   "available_comparisons": [
     {
       "name": "Government Type",
-      "id": "government_type"
+      "id": "by_government_type"
     },
     {
       "name": "Years",
-      "id": "years"
+      "id": "by_years"
     }
   ],
-  "current_comparison": "year",
+  "current_comparison": "by_year",
   "available_adjustments": [
     {
       "name": "Per Capita",
@@ -436,41 +405,41 @@ GET `/API/spending/by_mission?comparison=years&government_type=combined`
   "current_government_type": "combined",
   "available_years": null,
   "current_year": null,
+  "current_columns": [
+    {
+      "name": "1980",
+      "data_id": "1980"
+    },
+    {
+      "name": "1990",
+      "data_id": "1990"
+    },
+    {
+      "name": "2000",
+      "data_id": "2000"
+    },
+    {
+      "name": "2010",
+      "data_id": "2010"
+    },
+    {
+      "name": "2011",
+      "data_id": "2011"
+    },
+    {
+      "name": "2012",
+      "data_id": "2012"
+    },
+    {
+      "name": "2013",
+      "data_id": "2013"
+    },
+  ],
   "data_tables": [
     {
       "id": "deficit-surplus", // just some unique ID
       "name": "Annual Deficit / Surplus ($ billions)",
       "type": "summary",
-      "columns": [
-        {
-          "name": "1980",
-          "data_id": "1980"
-        },
-        {
-          "name": "1990",
-          "data_id": "1990"
-        },
-        {
-          "name": "2000",
-          "data_id": "2000"
-        },
-        {
-          "name": "2010",
-          "data_id": "2010"
-        },
-        {
-          "name": "2011",
-          "data_id": "2011"
-        },
-        {
-          "name": "2012",
-          "data_id": "2012"
-        },
-        {
-          "name": "2013",
-          "data_id": "2013"
-        },
-      ],
       "rows": [
         {
           "key": "total-revenue",
@@ -519,36 +488,6 @@ GET `/API/spending/by_mission?comparison=years&government_type=combined`
       "id": "by-mission",
       "name": "Spending By Mission ($ billions)",
       "type": "expandable",
-      "columns": [
-        {
-          "name": "1980",
-          "data_id": "1980"
-        },
-        {
-          "name": "1990",
-          "data_id": "1990"
-        },
-        {
-          "name": "2000",
-          "data_id": "2000"
-        },
-        {
-          "name": "2010",
-          "data_id": "2010"
-        },
-        {
-          "name": "2011",
-          "data_id": "2011"
-        },
-        {
-          "name": "2012",
-          "data_id": "2012"
-        },
-        {
-          "name": "2013",
-          "data_id": "2013"
-        },
-      ],
       "rows": [
         {
           "key": "justice",
@@ -744,20 +683,6 @@ GET `/API/spending/by_mission?comparison=years&government_type=combined`
       "id": "grants-paid",
       "name": null,
       "type": "summary",
-      "columns": [
-        {
-          "name": "Federal",
-          "data_id": "federal",
-        },
-        {
-          "name": "State & Local",
-          "data_id": "state_local"
-        },
-        {
-          "name": "Combined",
-          "data_id": "combined"
-        }
-      ],
       rows: [
         {
           "key": "grants-paid-by-federal-government",
@@ -806,14 +731,14 @@ Reference Powerpoint Presentation page 30 for example of Spending/Expenditures b
   "available_comparisons": [
     {
       "name": "Government Type",
-      "id": "government_type"
+      "id": "by_government_type"
     },
     {
       "name": "Years",
-      "id": "years"
+      "id": "by_years"
     }
   ],
-  "current_comparison": "government_type",
+  "current_comparison": "by_government_type",
   "available_adjustments": [
     {
       "name": "Per Capita",
@@ -858,14 +783,25 @@ Reference Powerpoint Presentation page 30 for example of Spending/Expenditures b
     }
   ],
   "current_year": "2013",
+  "current_columns": [
+    {
+      "name": "Federal",
+      "data_id": "federal",
+    },
+    {
+      "name": "State & Local",
+      "data_id": "state_local"
+    },
+    {
+      "name": "Combined",
+      "data_id": "combined"
+    }
+  ],
   "data_tables": [
     {
       "id": "deficit-surplus",
       "name": "Annual Deficit / Surplus ($ billions)",
       "type": "summary",
-      "columns": [
-        ...
-      ],
       "rows": [
         ...
       ],
@@ -877,9 +813,6 @@ Reference Powerpoint Presentation page 30 for example of Spending/Expenditures b
       "id": "by-function",
       "name": "Spending By Function ($ billions)",
       "type": "expandable",
-      "columns": [
-        ...
-      ],
       "rows": [
         ...
       ],
