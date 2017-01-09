@@ -1,5 +1,5 @@
 # Government Finance Tables API Proposal V2
-See Full Example below
+See [Full Example](#full-example---spending-by-mission) below
 
 ## Overview
 This version of the Finance Tables API Proposal is very similar to the previous version with the main exception being that the data returned for each row include all government types (e.g. Federal, State & Local, and Combined) as well as all the yearly data for each of those government types. 
