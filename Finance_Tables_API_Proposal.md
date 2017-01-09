@@ -1,11 +1,116 @@
 # Government Finance Tables API Proposal
 
+## Overview
+This version of the Finance Tables API Proposal is very similar to the previous version with the main exception being that the data returned for each row include all government types (e.g. Federal, State & Local, and Combined) as well as all the yearly data for each of those government types. 
+
+*Example of a single row without any children:*
+```javascript
+{
+    "id": 1000,
+    "key": "total-revenue",
+    "name": "Annual Deficit / Surplus - Total Revenue",
+    "lexicon_name": "Total Revenue",
+    "url": "metrics/1000",
+    "data": {
+      "federal": {
+        "1980": 2999.1,
+        "1990": 2999.1,
+        "2000": 2999.1,
+        "2010": 2999.1,
+        "2011": 2999.1,
+        "2012": 2999.1,
+        "2013": 2999.1,
+        "2014": 2999.1,
+        "2015": 2999.1,
+      },
+      "state_local": {
+        "1980": 2333.1,
+        "1990": 2333.1,
+        "2000": 2333.1,
+        "2010": 2333.1,
+        "2011": 2333.1,
+        "2012": 2333.1,
+        "2013": 2333.1,
+        "2014": "n/a",
+        "2015": "n/a"
+      },
+      "combined": {
+        "1980": 2333.1,
+        "1990": 5533.1,
+        "2000": 5533.1,
+        "2010": 5533.1,
+        "2011": 5533.1,
+        "2012": 5533.1,
+        "2013": 5533.1,
+        "2014": "n/a",
+        "2015": "n/a"
+      }
+    },
+    "children": null
+    }
+```
+
+This make it so the table component on the front-end has all the data it needs to render each view of the data given the UI selections. Also, it cuts down on needing to hit the API for every discrete change in the UI. This will also provide the ncessary data to render the sparklines on each row.
+
+
+## Endpoints and Finance Page Configuration
+Each table data set will have its own endpoint, for example, "Spending by Mission" could be `API/financeTables/1`. Therefore, one could also theorteically get a list of ALL of the available finance tables that could appear on any of the finance pages by going to `API/financeTables/`. The way each page knows which available datasets it has (e.g. Spending has 'Spending By Mission', 'Spending By Function', 'Alternate P&L') is via a page configration object for each Finance Page that maps the available datasets to each page and provides the title and URL for each of the datasets for that Finance Page. This object can either be hardcoded or should probably also come from the API, which I believe may help with search indexing.
+
+*Example of Spending Page configuration object for the Spending Page, possibly aquired at `API/finances/spending`:*
+```javascript
+{
+  "name": "Government Spending",
+  "lexicon_name": "Spending",
+  "current_table": 1,
+  "available_tables": [
+    {
+      "id": 1,
+      "name": "Spending By Mission",
+      "lexicon_name": "Spending By Mission",
+      "url": "financeTables/1"
+    },
+    {
+      "id": 2,
+      "name": "Spending By Function",
+      "lexicon_name": "Spending By Function",
+      "url": "financeTables/2"
+    },
+    {
+      "id": 3,
+      "name": "Spending By Alternate P&L",
+      "lexicon_name": "Alternate P&L",
+      "url": "financeTables/2"
+    }
+  ]
+}
+```
+With this, the front-end can configure the selections in the *'Choose Data'* dropdown and procure the necessary data table set via the `url` when it is selected in the dropdown. Note in the above example, the default table is set to *Spending By Mission* for the Spending Page via `current_table`.
+ 
+## Options
+The data necessary to fill out the UI for *'Compare By'*, *'Select Year'*, and *'Select Government Type'* has been moved into an object titled `options`. These options will also now be used to determine which columns appear above the table and indicate which data point to grab for each column and row. For example, when `by_government_type` is selected as the `current_comparison`, `available_government_types` will be used as the columns, and `current_year` will be used to select which year's data will be displayed.
+
+## Data Tables
+Just like the previous proposal, each larger table object procured at the `API/financeTables/{id}` endpoint, will have an array of individual 'table blocks' found in the `data_tables` array. Each of the `data_tables` correspond to the various types of tables one would see on a given Finance Page. For example the below example of a full data table corresponds to this view: (https://artefactgroup.invisionapp.com/share/AQ9BWL1T4#/screens/210425493)
+
+*NOTE* that, although not represented in this example, it might be helpful for search indexing to be able to grab each of the `data_tables` for a table set via an individual `url` as well, for example the "Annual Deficit / Surplus Total Spending" table block below could be directly procured at `API/financeTables/1/tables/1`. 
+
+## Rows and Total Rows Object
+### Rows ARE Metrics
+Each row will need to have a `url` that points to its corresponding metric page.
+
+##
+
+
 ```javascript
 {
     "id": 1,
     "name": "Government Spending By Mission",
     "lexicon_name": "Spending By Mission",
     "url": "financeTables/1",
+    "current_comparison": "by_government_type",
+    "current_year": "2013",
+    "current_government_type": null,
+    "current_adjustments": [],
     "options": {
       "available_comparisons": [
         {
@@ -128,6 +233,7 @@
                 "2015": "n/a"
               }
             },
+            "children": null
           },
           {
             "id": 1001,
